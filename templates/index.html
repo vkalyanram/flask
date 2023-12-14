@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Interface</title>
+    <!-- Add jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add CSS for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Adjust styling as needed */
+        .sidebar {
+            background-color: #f0f0f0;
+            height: 100vh;
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding-bottom: 60px; /* Space for input and button at the bottom */
+             padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 25%;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+             padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chat-section {
+            padding: 20px;
+        }
+
+        .equal-part {
+            width: 100%;
+            height: 50%;
+            background-color: #e6f7ff; /* Light blue background for both parts */
+            padding: 10px;
+            margin-bottom: 10px; /* Add space between sections */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3 sidebar" id="chat-box">
+            <!-- Content for the left sidebar -->
+            <h4>Chat History</h4>
+            <div class="chat-history">
+                <p>Here you can ask about the store info</p>
+            </div>
+            <div class="input-section">
+                <input id="user-input" placeholder="Type your message..." type="text">
+                <button onclick="sendMessage()">Submit Query</button>
+            </div>
+        </div>
+
+
+<div class="col-9 chat-section">
+    <div class="row">
+        <div class="col">
+       <div class="container-lg"> <div style="width: 100%; height: 340px; display: flex; justify-content: center; align-items: center;">
+    <p id="content_update" style="text-align: center;"></p>
+</div>
+
+</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+<div class="container-lg">
+      <img id="dynamicImage" src="{{ url_for('static', filename='img/3.png') }}" alt="Image 1" width="100%" height="340">
+
+  </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+<!-- JavaScript for chat functionality -->
+<script>
+    // List of image filenames
+    const images = ['img/3.png', 'img/4.png', 'img/5.png', 'img/6.png'];
+
+    // Function to generate a random number within a range
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Function to change the image source randomly
+    function changeImage() {
+        const randomIndex = getRandomInt(0, images.length - 1);
+        const randomImage = images[randomIndex];
+        const imgElement = document.getElementById('dynamicImage');
+        imgElement.src = "{{ url_for('static', filename='') }}" + randomImage;
+    }
+
+
+</script>
+<script>
+    function sendMessage() {
+        var userMessage = document.getElementById("user-input").value;
+
+        $.ajax({
+            type: 'POST',
+            url: '/send_message',
+            contentType: 'application/json',
+            data: JSON.stringify({ message: userMessage }),
+            success: function(data) {
+                // Process the bot response and display it in the chat-box div
+                document.getElementById("user-input").value = "";
+                document.getElementById("content_update").innerHTML = data.df;
+                displayBotResponse(data.bot_response);
+                  changeImage();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function displayBotResponse(response) {
+        // Display the bot response in the chat-box div
+        var chatBox = document.getElementById("chat-box");
+        var messageElement = document.createElement('div');
+        messageElement.textContent = response;
+        chatBox.appendChild(messageElement);
+
+         // Call the function to change the image source
+
+    }
+</script>
+
+</body>
+</html>
