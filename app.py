@@ -38,11 +38,9 @@ def send_message():
 
     # Get a random set of three sentences from the list
     random_sentences = random.sample(sentences, 3)
-
-
-
     # Assign the random sentence to 'df'
     df = random_sentences
-    return jsonify({'bot_response': bot_response,'df':df})
+    x = random.randint(600, 1000)
+    return jsonify({'bot_response': bot_response,'df':df,'x':x})
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0', port=5111)  # Run the Flask app
